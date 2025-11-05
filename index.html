@@ -198,11 +198,12 @@
             aspect-ratio: 9/16;
         }
         
-        .video-container video {
+        /* 修改B站iframe样式以适应竖屏容器 */
+        .bilibili-iframe {
             width: 100%;
             height: 100%;
+            border: none;
             display: block;
-            object-fit: contain;
         }
         
         .video-controls {
@@ -232,6 +233,12 @@
         .video-controls button:hover {
             background: rgba(255, 255, 255, 0.3);
             transform: translateY(-3px);
+        }
+        
+        .video-controls button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
         }
         
         .image-links {
@@ -484,10 +491,17 @@
             <div class="main-content">
                 <div class="video-section">
                     <div class="video-container">
-                        <video id="mainVideo" poster="video.jpg" preload="metadata">
-                            <source src="Video.mp4" type="video/mp4">
-                                您的浏览器不支持视频播放。
-                        </video>
+                        <!-- 修改后的B站嵌入代码 -->
+                        <iframe 
+                            class="bilibili-iframe"
+                            src="//player.bilibili.com/player.html?isOutside=true&aid=115495412040048&bvid=BV1hG1WBaEPJ&cid=33714145039&p=1&autoplay=0"
+                            scrolling="no" 
+                            border="0" 
+                            frameborder="no" 
+                            framespacing="0" 
+                            allowfullscreen="true"
+                            id="bilibiliVideo">
+                        </iframe>
                     </div>
                     <div class="video-controls">
                         <button id="playBtn"><i class="fas fa-play"></i> 播放视频</button>
@@ -533,7 +547,7 @@
             
             <div class="footer">
                 <p>© 2025 11/13 | 唯你所有 非你不可
-                    <br>网站唯一使用人：赵箫飏
+                    <br>网站唯一使用人：xxx
                 </p>
             </div>
         </div>
@@ -550,9 +564,12 @@
             const heroSection = document.getElementById('heroSection');
             const contentSection = document.getElementById('contentSection');
             const backToTopBtn = document.getElementById('backToTop');
-            const video = document.getElementById('mainVideo');
             const playBtn = document.getElementById('playBtn');
             const pauseBtn = document.getElementById('pauseBtn');
+            const bilibiliIframe = document.getElementById('bilibiliVideo');
+            
+            // 初始禁用暂停按钮
+            pauseBtn.disabled = true;
             
             // 处理向下箭头点击事件
             scrollDownBtn.addEventListener('click', function() {
@@ -584,17 +601,30 @@
                 // 将图片区域移回屏幕
                 heroSection.classList.remove('slide-up');
                 
-                // 暂停视频
-                video.pause();
+                // 重置视频控制按钮状态
+                playBtn.disabled = false;
+                pauseBtn.disabled = true;
             });
             
             // 视频控制
             playBtn.addEventListener('click', function() {
-                video.play();
+                // 由于跨域限制，无法直接控制B站播放器
+                // 这里我们模拟播放状态并提示用户
+                playBtn.disabled = true;
+                pauseBtn.disabled = false;
+                
+                // 提示用户点击播放器上的播放按钮
+                alert('请在B站播放器上点击播放按钮开始播放视频');
             });
             
             pauseBtn.addEventListener('click', function() {
-                video.pause();
+                // 由于跨域限制，无法直接控制B站播放器
+                // 这里我们模拟暂停状态并提示用户
+                playBtn.disabled = false;
+                pauseBtn.disabled = true;
+                
+                // 提示用户点击播放器上的暂停按钮
+                alert('请在B站播放器上点击暂停按钮暂停视频');
             });
             
             // 添加图片链接的点击事件
@@ -623,7 +653,7 @@
                 if (window.innerWidth < 768) {
                     videoContainer.style.maxWidth = '100%';
                 } else {
-                    videoContainer.style.maxWidth = '600px';
+                    videoContainer.style.maxWidth = '400px';
                 }
             }
             
