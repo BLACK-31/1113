@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>相册</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            /* background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d); */
+            background: linear-gradient(135deg, #fad0c4 0%, #ffd1ff 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .album-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        
+        .album-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        
+        .album-header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #ff9a9e, #fecfef);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        
+        .album-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .photo-item {
+            display:flex;
+            flex-direction: column;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s ease;
+            background: rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+        
+        .photo-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        }
+        
+        .photo-item img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s ease;
+            min-height: 350px;
+        }
+        
+        .photo-item:hover img {
+            transform: scale(1.05);
+        }
+        
+        .photo-caption {
+            flex:1;
+            display:flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+            min-height: 80px;/* 设置最小高度 */
+            max-height:120px; /* 设置最大高度 */
+            overflow: hidden; /* 超出部分隐藏 */
+        }
+        
+        .photo-caption h3 {
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .photo-caption p {
+            opacity: 0.8;
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            margin-top: 40px;
+            padding: 12px 25px;
+            background: rgba(255, 255, 255, 0.18);
+            border-radius: 50px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+        
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+        }
+        
+        .back-button i {
+            margin-right: 8px;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.18);
+            font-size: 0.9rem;
+            opacity: 0.7;
+            
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .photo-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .album-header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .album-container {
+                padding: 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .photo-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .album-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .photo-item img {
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <audio id="myAudio" controls="auto" autoplay="true"  loop="loop" preload="auto" src="lover.mp3" hidden="true"></audio>
+    <div class="album-container">
+        <div class="album-header">
+            <h1>相册</h1>
+            <p>相册有限，更多相片，请关注班班宝宝！</p>
+        </div>
+        
+        <div class="photo-grid">
+            <!-- 照片1 -->
+            <div class="photo-item">
+                <img src="picture/1.jpg" alt="6">
+                <div class="photo-caption">
+                    <h3>化妆</h3>
+                    <p>悠宝化妆时也同样好看！</p>
+                </div>
+            </div>
+            
+            <!-- 照片2 -->
+            <div class="photo-item">
+                <img src="picture/6.jpg" alt="2">
+                <div class="photo-caption">
+                    <h3>列车上</h3>
+                    <p>夜晚在列车上帮她打灯贴美甲，氛围感拉满！</p>
+                </div>
+            </div>
+
+            <!-- 照片3 -->
+            <div class="photo-item">
+                <img src="picture/3.jpg" alt="3">
+                <div class="photo-caption">
+                    <h3>卡布达</h3>
+                    <p>我宝给我买了喜欢的卡布达！</p>
+                </div>
+            </div>
+
+            <!-- 照片4 -->
+            <div class="photo-item">
+                <img src="picture/4.jpg" alt="4">
+                <div class="photo-caption">
+                    <h3>西园寺喂猫</h3>
+                    <p>那一刻，我的世界只有充满爱心的悠宝！</p>
+                </div>
+            </div>
+
+            <!-- 照片5 -->
+            <div class="photo-item">
+                <img src="picture/5.jpg" alt="5">
+                <div class="photo-caption">
+                    <h3>苏州</h3>
+                    <p>她夸我拍得好，嘻嘻开心能给她出片！</p>
+                </div>
+            </div>
+
+            <!-- 照片6 -->
+            <div class="photo-item">
+                <img src="picture/2.jpg" alt="6">
+                <div class="photo-caption">
+                    <h3>万圣节</h3>
+                    <p>企鹅和小南瓜永远在一起！</p>
+                </div>
+            </div>
+
+            
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="javascript:history.back()" class="back-button">
+                <i class="fas fa-arrow-left"></i> 返回主页面
+            </a>
+        </div>
+        
+        <div class="footer">
+            <p>© 感谢与你相遇，与你共度美好时光
+                <br>我会继续陪伴在你的身边
+            </p>
+        </div>
+    </div>
+    <script>
+        document.getElementById('myAudio').volume = 0.2; // 设置音量为20%
+    </script>
+</body>
+</html>

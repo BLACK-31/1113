@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>music</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                        url('bg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .player-container {
+            width: 100%;
+            max-width: 400px;
+            background: rgba(30, 30, 30, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .album-art {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .album-art::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: url(always\ been\ you.jpg);
+            background-size: cover;
+            background-position: center;
+            opacity: 0.6;
+            filter: blur(2px);
+        }
+        
+        .album-art img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            z-index: 1;
+            animation: rotate 20s linear infinite;
+            animation-play-state: paused;
+        }
+        
+        .album-art.playing img {
+            animation-play-state: running;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .song-info {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .song-info h1 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+        
+        .song-info p {
+            font-size: 1rem;
+            opacity: 0.7;
+        }
+        
+        .progress-container {
+            padding: 0 20px;
+            margin: 20px 0;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .progress {
+            width: 30%;
+            height: 100%;
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            border-radius: 5px;
+            transition: width 0.1s linear;
+        }
+        
+        .time {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            gap: 20px;
+        }
+        
+        .control-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+        }
+        
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .play-pause {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            border-radius: 50%;
+            font-size: 1.5rem;
+        }
+        
+        .play-pause:hover {
+            transform: scale(1.1);
+        }
+        
+        .volume-container {
+            padding: 0 20px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .volume-bar {
+            flex: 1;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .volume-level {
+            width: 70%;
+            height: 100%;
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            border-radius: 5px;
+        }
+        
+        .lyrics-container {
+            padding: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .lyrics {
+            font-size: 0.9rem;
+            line-height: 1.8;
+            opacity: 0.8;
+        }
+        
+        .current-lyric {
+            color: #feb47b;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .back-button {
+            display: inline-flex;
+            left: 50%;
+            align-items: center;
+            margin-top: 40px;
+            padding: 12px 25px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+        
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+        }
+        
+        .back-button i {
+            margin-right: 8px;
+        }
+        
+        /* 自定义滚动条 */
+        .lyrics-container::-webkit-scrollbar {
+            width: 5px;
+        }
+        
+        .lyrics-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+        }
+        
+        .lyrics-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #ff7e5f, #feb47b);
+            border-radius: 5px;
+        }
+        
+        @media (max-width: 480px) {
+            .player-container {
+                max-width: 100%;
+            }
+            
+            .album-art {
+                height: 250px;
+            }
+            
+            .album-art img {
+                width: 150px;
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="player-container">
+        <div class="album-art" id="albumArt">
+            <img src="always been you.jpg" alt="封面">
+        </div>
+        
+        <div class="song-info">
+            <h1>Alawys Been You</h1>
+            <p>Henry</p>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar">
+                <div class="progress" id="progress"></div>
+            </div>
+            <div class="time">
+                <span id="currentTime">0:00</span>
+                <span id="duration">5:00</span>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="control-btn" id="prevBtn">
+                <i class="fas fa-step-backward"></i>
+            </button>
+            <button class="control-btn play-pause" id="playPauseBtn">
+                <i class="fas fa-play" id="playIcon"></i>
+            </button>
+            <button class="control-btn" id="nextBtn">
+                <i class="fas fa-step-forward"></i>
+            </button>
+        </div>
+        
+        <div class="volume-container">
+            <i class="fas fa-volume-up"></i>
+            <div class="volume-bar" id="volumeBar">
+                <div class="volume-level" id="volumeLevel"></div>
+            </div>
+        </div>
+        
+        <div class="lyrics-container">
+            <p class="lyrics" id="lyrics">
+                <p>I was running，</p>
+                <p>我在不停奔跑，</p>
+                <p>Round in circles，</p>
+                <p>却仍困在原地，</p>
+                <p>Lost my mind and，</p>
+                <p>迷失方向，</p>
+                <p>Lost my purpose，</p>
+                <p>漫无目的，</p>
+                <p>I was blindfolded in search for what was missing，</p>
+                <p>犹如蒙上双眼 四处摸索，</p>
+                <p>I was drowning，</p>
+                <p>我沦陷在，</p>
+                <p>In the silence，</p>
+                <p>这寂静之中，</p>
+                <p>All I needed，</p>
+                <p>谁能施舍给我，</p>
+                <p>Was some kindness，</p>
+                <p>一些善意，</p>
+                <p>I needed someone to，</p>
+                <p>我不过是需要有人，</p>
+                <p>forgive my darkest nights，</p>
+                <p>原谅我置身的黑夜，</p>
+                <p>I wouldn’t take back，</p>
+                <p>我无法弥补，</p>
+                <p>all the mistakes that I made，</p>
+                <p>曾经犯下的过错，</p>
+                <p>Cause each one helped，</p>
+                <p>因为大家都曾向我，</p>
+                <p>me find my way，</p>
+                <p>伸出援手 为我踏上归途，</p>
+                <p>I look back now and，</p>
+                <p>如今我回首过往，</p>
+                <p>chalk it all up to fate，</p>
+                <p>将一切归咎于命运的安排，</p>
+                <p>Even when the sky falls down，</p>
+                <p>尽管天塌下来，</p>
+                <p>Even when everybody let me drown，</p>
+                <p>尽管每个人都会让我无法自拔，</p>
+                <p>If I only knew，</p>
+                <p>如果我知道，</p>
+                <p>It’s always been you，</p>
+                <p>一直是因为你的存在。</p>
+                <p></p>
+            </div>
+        </div>
+    </div>
+
+    <audio id="audio" preload="metadata">
+        <source src="Always Been You.mp3" type="audio/mpeg">
+        您的浏览器不支持音频播放。
+    </audio>
+
+    <div style="text-align: center; ">
+            <a href="javascript:history.back()" class="back-button">
+                <i class="fas fa-arrow-left"></i> 返回
+            </a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const audio = document.getElementById('audio');
+            const playPauseBtn = document.getElementById('playPauseBtn');
+            const playIcon = document.getElementById('playIcon');
+            const albumArt = document.getElementById('albumArt');
+            const progressBar = document.getElementById('progressBar');
+            const progress = document.getElementById('progress');
+            const currentTimeEl = document.getElementById('currentTime');
+            const durationEl = document.getElementById('duration');
+            const volumeBar = document.getElementById('volumeBar');
+            const volumeLevel = document.getElementById('volumeLevel');
+            
+            // 播放/暂停功能
+            playPauseBtn.addEventListener('click', function() {
+                if (audio.paused) {
+                    audio.play();
+                    playIcon.classList.remove('fa-play');
+                    playIcon.classList.add('fa-pause');
+                    albumArt.classList.add('playing');
+                } else {
+                    audio.pause();
+                    playIcon.classList.remove('fa-pause');
+                    playIcon.classList.add('fa-play');
+                    albumArt.classList.remove('playing');
+                }
+            });
+            
+            // 更新进度条
+            audio.addEventListener('timeupdate', function() {
+                const currentTime = audio.currentTime;
+                const duration = audio.duration;
+                
+                // 更新进度条宽度
+                const progressPercent = (currentTime / duration) * 100;
+                progress.style.width = `${progressPercent}%`;
+                
+                // 更新时间显示
+                currentTimeEl.textContent = formatTime(currentTime);
+                
+                if (duration) {
+                    durationEl.textContent = formatTime(duration);
+                }
+            });
+            
+            // 点击进度条跳转
+            progressBar.addEventListener('click', function(e) {
+                const rect = progressBar.getBoundingClientRect();
+                const percent = (e.clientX - rect.left) / rect.width;
+                audio.currentTime = percent * audio.duration;
+            });
+            
+            // 音量控制
+            volumeBar.addEventListener('click', function(e) {
+                const rect = volumeBar.getBoundingClientRect();
+                const percent = (e.clientX - rect.left) / rect.width;
+                audio.volume = percent;
+                volumeLevel.style.width = `${percent * 100}%`;
+            });
+            
+            // 格式化时间显示
+            function formatTime(seconds) {
+                const min = Math.floor(seconds / 60);
+                const sec = Math.floor(seconds % 60);
+                return `${min}:${sec < 10 ? '0' : ''}${sec}`;
+            }
+            
+            // 设置初始音量
+            audio.volume = 0.5;
+            volumeLevel.style.width = '50%';
+            
+            // 设置初始时间显示
+            durationEl.textContent = '3:00';
+        });
+    </script>
+</body>
+</html>

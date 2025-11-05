@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>birthday</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+        }
+        
+        .main-title {
+            font-size: 6rem;
+            font-weight: bold;
+            text-align: center;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
+            color: #ff7e5f; /* 回退颜色 */
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: pulse 3s infinite alternate;
+            z-index: 10;
+            position: relative;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            }
+            100% {
+                transform: scale(1.05);
+                text-shadow: 0 0 30px rgba(255, 255, 255, 0.9);
+            }
+        }
+        
+        .floating-text {
+            position: absolute;
+            font-size: 1.5rem;
+            opacity: 0.7;
+            animation: float linear infinite;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+            }
+        }
+        
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+        
+        .particle {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: particle-float linear infinite;
+        }
+        
+        @keyframes particle-float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .language-info {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            /* background: rgba(255, 255, 255, 0.1); */
+            /* backdrop-filter: blur(10px); */
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-size: 1rem;
+            z-index: 5;
+            /* border: 1px solid rgba(255, 255, 255, 0.2);  */
+        }
+        
+        .language-info i {
+            margin-right: 10px;
+            color: #feb47b;
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            margin-top: 40px;
+            padding: 12px 25px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+        
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+        }
+        
+        .back-button i {
+            margin-right: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 4rem;
+            }
+            
+            .floating-text {
+                font-size: 1.2rem;
+            }
+            
+            .language-info {
+                width: 90%;
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .main-title {
+                font-size: 3rem;
+            }
+            
+            .floating-text {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <audio id="myAudio" controls="auto" autoplay="true"  loop="loop" preload="auto" src="birthday.mp3" hidden="true"></audio>
+    
+    <span class="language-info">
+        <a href="javascript:history.back()" class="back-button">
+           看够20多个国家祝你"生日快乐"了吧，返回吧 
+        </a></span>
+
+    <div class="container">
+        <h1 class="main-title">亲爱的悠宝<br>&nbsp;!生日快乐!</h1>
+         <!-- <h1 class="main-title">11<br>&nbsp;11</h1> -->
+    </div>
+    
+    <div class="particles" id="particles"></div>
+    
+    
+    
+
+    <script>
+        document.getElementById("myAudio").volume = 0.2;
+        document.addEventListener('DOMContentLoaded', function() {
+            // 各种语言的生日快乐文本
+            const birthdayTexts = [
+                "Happy Birthday", // 英语
+                "Joyeux Anniversaire", // 法语
+                "Alles Gute zum Geburtstag", // 德语
+                "Feliz Cumpleaños", // 西班牙语
+                "Buon Compleanno", // 意大利语
+                "С Днём Рождения", // 俄语
+                "生日快乐", // 中文
+                "お誕生日おめでとう", // 日语
+                "생일 축하합니다", // 韩语
+                "عيد ميلاد سعيد", // 阿拉伯语
+                "Parabéns", // 葡萄牙语
+                "Gelukkige Verjaardag", // 荷兰语
+                "Grattis på födelsedagen", // 瑞典语
+                "Tillykke med fødselsdagen", // 丹麦语
+                "Hyvää syntymäpäivää", // 芬兰语
+                "Maligayang Kaarawan", // 菲律宾语
+                "Doğum Günün Kutlu Olsun", // 土耳其语
+                "Χαρούμενα Γενέθλια", // 希腊语
+                "Všechno nejlepší k narozeninám", // 捷克语
+                "Boldog Születésnapot", // 匈牙利语
+                "La Multi Ani", // 罗马尼亚语
+                "Sretan Rođendan", // 克罗地亚语
+                "Všetko najlepšie k narodeninám" // 斯洛伐克语
+            ];
+            
+            const container = document.querySelector('.container');
+            const particlesContainer = document.getElementById('particles');
+            
+            // 创建漂浮文字
+            function createFloatingText() {
+                const textIndex = Math.floor(Math.random() * birthdayTexts.length);
+                const text = document.createElement('div');
+                text.className = 'floating-text';
+                text.textContent = birthdayTexts[textIndex];
+                text.style.left = Math.random() * 100 + 'vw';
+                text.style.animationDuration = (Math.random() * 20 + 10) + 's';
+                text.style.animationDelay = Math.random() * 5 + 's';
+                text.style.fontSize = (Math.random() * 10 + 16) + 'px';
+                text.style.opacity = Math.random() * 0.5 + 0.3;
+                
+                container.appendChild(text);
+                
+                // 文字移除后重新创建
+                setTimeout(() => {
+                    text.remove();
+                    createFloatingText();
+                }, 30000);
+            }
+            
+            // 创建粒子
+            function createParticle() {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const size = Math.random() * 10 + 2;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.animationDuration = (Math.random() * 20 + 10) + 's';
+                particle.style.animationDelay = Math.random() * 5 + 's';
+                
+                particlesContainer.appendChild(particle);
+                
+                // 粒子移除后重新创建
+                setTimeout(() => {
+                    particle.remove();
+                    createParticle();
+                }, 30000);
+            }
+            
+            // 初始化漂浮文字
+            for (let i = 0; i < 30; i++) {
+                setTimeout(createFloatingText, i * 500);
+            }
+            
+            // 初始化粒子
+            for (let i = 0; i < 50; i++) {
+                setTimeout(createParticle, i * 200);
+            }
+            
+            // 添加鼠标跟随效果
+            document.addEventListener('mousemove', function(e) {
+                const floatingTexts = document.querySelectorAll('.floating-text');
+                const mouseX = e.clientX;
+                const mouseY = e.clientY;
+                
+                floatingTexts.forEach(text => {
+                    const rect = text.getBoundingClientRect();
+                    const textX = rect.left + rect.width / 2;
+                    const textY = rect.top + rect.height / 2;
+                    
+                    const distanceX = mouseX - textX;
+                    const distanceY = mouseY - textY;
+                    const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+                    
+                    if (distance < 100) {
+                        const force = (100 - distance) / 100;
+                        text.style.transform += ` translate(${distanceX * force * 0.02}px, ${distanceY * force * 0.02}px)`;
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
